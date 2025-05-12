@@ -2,7 +2,7 @@
   "name": "Calculadora",
   "short_name": "Calc",
   "description": "Calculadora simple",
-  "start_url": "/",
+  "start_url": "/Calculadora/",
   "display": "standalone",
   "background_color": "#1e293b",
   "theme_color": "#1e293b",
