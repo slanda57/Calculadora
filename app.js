@@ -1,16 +1,18 @@
-// Definir variables
 const { useState } = React;
+const { Mic } = lucide;
 
-function App() {
-  // Estado para controlar el desbloqueo y código
+function MatrizDinamicaApp() {
+  // Estado para controlar si la app está desbloqueada
   const [isUnlocked, setIsUnlocked] = useState(false);
+  // Estado para el código numérico
   const [numericCode, setNumericCode] = useState('');
+  // Estado para la retroalimentación
   const [feedback, setFeedback] = useState('');
   
-  // Código de desbloqueo
+  // Código numérico secreto
   const secretCode = '3657';
   
-  // Manejar entrada de números
+  // Función para manejar el código numérico
   const handleNumberTap = (num) => {
     const newCode = numericCode + num;
     setNumericCode(newCode);
@@ -27,103 +29,62 @@ function App() {
     }
   };
   
-  // Pantalla de calculadora
-  const renderCalculator = () => {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(to bottom right, #111827, #000000)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1rem'
-      }}>
-        <div style={{
-          width: '100%',
-          maxWidth: '320px',
-          backgroundColor: 'rgba(31, 41, 55, 0.5)',
-          backdropFilter: 'blur(12px)',
-          borderRadius: '1.5rem',
-          padding: '1.5rem',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-        }}>
-          <h1 style={{
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: 'white',
-            marginBottom: '1.5rem',
-            textAlign: 'center'
-          }}>Calculadora</h1>
-          
-          <div style={{
-            backgroundColor: '#111827',
-            borderRadius: '0.75rem',
-            padding: '1rem',
-            marginBottom: '1.5rem',
-            height: '4rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end'
-          }}>
-            <span style={{
-              fontSize: '1.5rem',
-              color: 'white',
-              fontFamily: 'monospace'
-            }}>{numericCode ? numericCode.replace(/./g, '•') : '0'}</span>
-          </div>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '0.75rem'
-          }}>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, '='].map((key) => (
-              <button
-                key={key}
-                onClick={() => {
-                  if (key === 'C') {
-                    setNumericCode('');
-                    setFeedback('');
-                  } else if (key !== '=') {
-                    handleNumberTap(key.toString());
-                  }
-                }}
-                style={{
-                  padding: '1rem',
-                  borderRadius: '0.75rem',
-                  fontSize: '1.25rem',
-                  fontWeight: '600',
-                  backgroundColor: key === '=' 
-                    ? '#2563EB' 
-                    : key === 'C'
-                    ? '#DC2626'
-                    : '#374151',
-                  color: 'white',
-                  cursor: 'pointer',
-                  border: 'none',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                {key}
-              </button>
-            ))}
-          </div>
-          
-          {feedback && (
-            <p style={{
-              textAlign: 'center',
-              fontSize: '0.875rem',
-              marginTop: '1rem',
-              color: '#F87171'
-            }}>{feedback}</p>
-          )}
-        </div>
-      </div>
-    );
-  };
+  // Pantalla de entrada con calculadora
+  const LockScreen = () => (
+    React.createElement('div', {
+      className: "min-h-screen bg-gradient-to-br from-gray-900 to-black flex flex-col items-center justify-center p-4"
+    },
+      React.createElement('div', {
+        className: "w-full max-w-sm bg-gray-800/50 backdrop-blur-lg rounded-3xl p-6 shadow-2xl"
+      },
+        React.createElement('h1', {
+          className: "text-2xl font-bold text-white mb-6 text-center"
+        }, "Calculadora"),
+        
+        // Display
+        React.createElement('div', {
+          className: "bg-gray-900 rounded-xl p-4 mb-6 h-16 flex items-center justify-end"
+        },
+          React.createElement('span', {
+            className: "text-2xl text-white font-mono"
+          }, numericCode ? numericCode.replace(/./g, '•') : '0')
+        ),
+        
+        // Teclado numérico
+        React.createElement('div', {
+          className: "grid grid-cols-3 gap-3"
+        },
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, '='].map((key) =>
+            React.createElement('button', {
+              key: key,
+              onClick: () => {
+                if (key === 'C') {
+                  setNumericCode('');
+                  setFeedback('');
+                } else if (key !== '=') {
+                  handleNumberTap(key.toString());
+                }
+              },
+              className: `p-4 rounded-xl text-xl font-semibold transition-all ${
+                key === '=' 
+                  ? 'bg-blue-600 text-white' 
+                  : key === 'C'
+                  ? 'bg-red-600 text-white'
+                  : 'bg-gray-700 text-white hover:bg-gray-600'
+              }`
+            }, key)
+          )
+        ),
+        
+        // Retroalimentación
+        feedback && React.createElement('p', {
+          className: "text-center text-sm mt-4 text-red-400"
+        }, feedback)
+      )
+    )
+  );
   
-  // Matriz Dinámica completa
+  // Tu app original de Matriz Dinámica
   const MatrizDinamica = () => {
     const initialNumbers = [
       [],
@@ -136,9 +97,9 @@ function App() {
 
     const [gridNumbers, setGridNumbers] = useState(initialNumbers);
     const [highlightedNumber, setHighlightedNumber] = useState(null);
-    const [mainFeedback, setMainFeedback] = useState('');
     const [voiceMessage, setVoiceMessage] = useState('');
     const [isRecording, setIsRecording] = useState(false);
+    const [mainFeedback, setMainFeedback] = useState('');
 
     const moveNumberToFirstRow = (number, rowIndex, colIndex) => {
       if (number === '') return;
@@ -185,10 +146,15 @@ function App() {
       setMainFeedback(`Número ${selectedNumber} movido a la primera posición, reemplazando a ${firstNumber}`);
       setTimeout(() => setMainFeedback(''), 3000);
       
-      const row1 = newGridNumbers[1].filter(n => n !== '').join(', ');
-      const row2 = newGridNumbers[2].filter(n => n !== '').join(', ');
-      const row3 = newGridNumbers[3].filter(n => n !== '').join(', ');
-      setVoiceMessage(`Filas actualizadas: Fila 1: ${row1}, Fila 2: ${row2}, Fila 3: ${row3}`);
+      const voiceInfo = generateVoiceMessage(newGridNumbers);
+      setVoiceMessage(voiceInfo);
+    };
+    
+    const generateVoiceMessage = (grid) => {
+      const row1 = grid[1].filter(n => n !== '').join(', ');
+      const row2 = grid[2].filter(n => n !== '').join(', ');
+      const row3 = grid[3].filter(n => n !== '').join(', ');
+      return `Filas actualizadas: Fila 1: ${row1}, Fila 2: ${row2}, Fila 3: ${row3}`;
     };
 
     const handleVoiceCommand = () => {
@@ -227,211 +193,114 @@ function App() {
       setTimeout(() => setMainFeedback(''), 2000);
     };
 
-    return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(to bottom right, #1E3A8A, #4F46E5, #7E22CE)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1rem',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          width: '100%',
-          maxWidth: '320px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '1.5rem'
-        }}>
-          <h1 style={{
-            fontSize: '1.875rem',
-            fontWeight: 'bold',
-            color: 'white'
-          }}>Matriz Dinámica</h1>
-          
-          <button
-            onClick={() => {
-              setIsUnlocked(false);
-              setNumericCode('');
-            }}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: 'rgba(220, 38, 38, 0.8)',
-              color: 'white',
-              borderRadius: '0.5rem',
-              fontSize: '0.875rem',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            Salir
-          </button>
-        </div>
+    const isHighlighted = (rowIndex, colIndex, number) => {
+      // Comprobación adicional para el número destacado
+      return rowIndex === 0 && colIndex === 1 && number === highlightedNumber;
+    };
+
+    return React.createElement('div', {
+      className: "flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 min-h-screen overflow-hidden"
+    },
+      React.createElement('div', {
+        className: "w-full max-w-sm flex justify-between items-center mb-6"
+      },
+        React.createElement('h1', {
+          className: "text-3xl font-bold text-white"
+        }, "Matriz Dinámica"),
+        React.createElement('button', {
+          onClick: () => {
+            setIsUnlocked(false);
+            setNumericCode('');
+          },
+          className: "px-4 py-2 bg-red-600/80 text-white rounded-lg text-sm"
+        }, "Salir")
+      ),
+      
+      React.createElement('div', {
+        className: "w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-3 mb-6 border border-white/20"
+      },
+        React.createElement('div', {
+          className: "bg-black/20 rounded-xl p-2"
+        },
+          gridNumbers.slice(1).map((row, rowIndex) =>
+            React.createElement('div', {
+              key: rowIndex + 1,
+              className: "flex gap-1 mb-2 justify-center"
+            },
+              row.map((number, colIndex) => {
+                // Determinar si este número debe ser destacado
+                const highlighted = isHighlighted(rowIndex, colIndex, number);
+                
+                return React.createElement('button', {
+                  key: colIndex,
+                  onClick: () => number !== '' && moveNumberToFirstRow(number, rowIndex + 1, colIndex),
+                  className: `
+                    ${number !== '' 
+                      ? highlighted
+                        ? 'bg-gradient-to-br from-yellow-400 to-amber-500 text-black transform scale-110 shadow-lg shadow-yellow-500/50' 
+                        : 'bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 hover:transform hover:scale-105'
+                      : 'bg-transparent'
+                    } 
+                    w-10 h-10 flex items-center justify-center rounded-lg 
+                    ${number !== '' ? 'shadow-lg font-bold text-sm border-2 border-white/30' : ''} 
+                    transition-all duration-300 ease-in-out
+                    ${number !== '' ? 'cursor-pointer' : 'cursor-default'}
+                  `,
+                  disabled: number === ''
+                }, number);
+              })
+            )
+          )
+        )
+      ),
+      
+      React.createElement('div', {
+        className: "flex gap-4 mb-6"
+      },
+        React.createElement('button', {
+          onClick: resetGrid,
+          className: "px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 font-semibold text-sm"
+        }, "Reiniciar"),
         
-        <div style={{
-          width: '100%',
-          maxWidth: '400px',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(12px)',
-          borderRadius: '1rem',
-          padding: '0.75rem',
-          marginBottom: '1.5rem',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          border: '1px solid rgba(255, 255, 255, 0.2)'
-        }}>
-          <div style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            borderRadius: '0.75rem',
-            padding: '0.5rem'
-          }}>
-            {gridNumbers.slice(1).map((row, rowIndex) => (
-              <div key={rowIndex} style={{
-                display: 'flex',
-                gap: '0.25rem',
-                marginBottom: '0.5rem',
-                justifyContent: 'center'
-              }}>
-                {row.map((number, colIndex) => (
-                  <button
-                    key={colIndex}
-                    onClick={() => number !== '' && moveNumberToFirstRow(number, rowIndex + 1, colIndex)}
-                    style={{
-                      width: '2.5rem',
-                      height: '2.5rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: '0.5rem',
-                      backgroundColor: number !== '' 
-                        ? (rowIndex === 0 && colIndex === 1 && number === highlightedNumber)
-                          ? 'linear-gradient(to bottom right, #F59E0B, #B45309)'
-                          : 'linear-gradient(to bottom right, #3B82F6, #7C3AED)'
-                        : 'transparent',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      fontSize: '0.875rem',
-                      border: number !== '' ? '2px solid rgba(255, 255, 255, 0.3)' : 'none',
-                      boxShadow: number !== '' ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none',
-                      transition: 'all 0.3s ease',
-                      cursor: number !== '' ? 'pointer' : 'default'
-                    }}
-                    disabled={number === ''}
-                  >
-                    {number}
-                  </button>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        <div style={{
-          display: 'flex',
-          gap: '1rem',
-          marginBottom: '1.5rem'
-        }}>
-          <button
-            onClick={resetGrid}
-            style={{
-              padding: '0.75rem 1.5rem',
-              background: 'linear-gradient(to right, #10B981, #059669)',
-              color: 'white',
-              borderRadius: '0.75rem',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-              fontWeight: '600',
-              fontSize: '0.875rem',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            Reiniciar
-          </button>
-          
-          <div style={{ textAlign: 'center' }}>
-            <button
-              onClick={handleVoiceCommand}
-              style={{
-                padding: '1rem',
-                borderRadius: '9999px',
-                background: isRecording 
-                  ? 'linear-gradient(to right, #EF4444, #EC4899)'
-                  : 'linear-gradient(to right, #3B82F6, #4F46E5)',
-                color: 'white',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                <line x1="12" y1="19" x2="12" y2="23"></line>
-                <line x1="8" y1="23" x2="16" y2="23"></line>
-              </svg>
-            </button>
-            <p style={{
-              fontSize: '0.75rem',
-              marginTop: '0.5rem',
-              color: 'rgba(255, 255, 255, 0.8)'
-            }}>{isRecording ? 'Grabando...' : 'Voz'}</p>
-          </div>
-        </div>
-        
-        {mainFeedback && (
-          <div style={{
-            padding: '0.75rem',
-            background: 'linear-gradient(to right, rgba(59, 130, 246, 0.2), rgba(124, 58, 237, 0.2))',
-            backdropFilter: 'blur(8px)',
-            color: 'white',
-            borderRadius: '0.75rem',
-            marginBottom: '1rem',
-            width: '100%',
-            maxWidth: '320px',
-            textAlign: 'center',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            fontSize: '0.875rem'
-          }}>
-            {mainFeedback}
-          </div>
-        )}
-        
-        {voiceMessage && (
-          <div style={{
-            padding: '1rem',
-            background: 'linear-gradient(to right, rgba(31, 41, 55, 0.8), rgba(30, 58, 138, 0.8))',
-            backdropFilter: 'blur(8px)',
-            color: 'white',
-            borderRadius: '0.75rem',
-            width: '100%',
-            maxWidth: '320px',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            fontSize: '0.875rem'
-          }}>
-            <p style={{
-              fontWeight: 'bold',
-              marginBottom: '0.5rem',
-              color: '#C4B5FD'
-            }}>Salida de voz:</p>
-            <p style={{ color: '#F9FAFB' }}>{voiceMessage}</p>
-          </div>
-        )}
-      </div>
+        React.createElement('div', {
+          className: "text-center"
+        },
+          React.createElement('button', {
+            onClick: handleVoiceCommand,
+            className: `p-4 rounded-full ${
+              isRecording 
+                ? 'bg-gradient-to-r from-red-500 to-pink-600 animate-ping' 
+                : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700'
+            } text-white shadow-xl transition-all duration-300 transform hover:scale-110`
+          },
+            React.createElement(Mic, { size: 24 })
+          ),
+          React.createElement('p', {
+            className: "text-xs mt-2 text-white/80"
+          }, isRecording ? 'Grabando...' : 'Voz')
+        )
+      ),
+      
+      mainFeedback && React.createElement('div', {
+        className: "p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md text-white rounded-xl mb-4 w-full max-w-sm text-center shadow-lg border border-white/20 text-sm"
+      }, mainFeedback),
+      
+      voiceMessage && React.createElement('div', {
+        className: "p-4 bg-gradient-to-r from-gray-900/80 to-slate-900/80 backdrop-blur-md text-white rounded-xl w-full max-w-sm shadow-xl border border-white/20 text-sm"
+      },
+        React.createElement('p', {
+          className: "font-bold mb-2 text-purple-300"
+        }, "Salida de voz:"),
+        React.createElement('p', {
+          className: "text-gray-100"
+        }, voiceMessage)
+      )
     );
   };
 
-  // Renderizar la pantalla correspondiente
-  return isUnlocked ? <MatrizDinamica /> : renderCalculator();
+  // Mostrar la pantalla correspondiente
+  return isUnlocked ? React.createElement(MatrizDinamica) : React.createElement(LockScreen);
 }
 
 // Renderizar la aplicación
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(React.createElement(MatrizDinamicaApp), document.getElementById('root'));
