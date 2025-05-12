@@ -11,6 +11,9 @@
     <meta name="apple-mobile-web-app-title" content="Calculadora">
     <meta name="theme-color" content="#1e293b">
     
+    <!-- Base para resolver rutas -->
+    <base href="/Calculadora/">
+    
     <!-- Icons -->
     <link rel="apple-touch-icon" href="icon-180.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -19,20 +22,18 @@
     <!-- Manifest -->
     <link rel="manifest" href="manifest.json">
     
-    <!-- React and Tailwind -->
+    <!-- React -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     
     <style>
-        body { margin: 0; padding: 0; }
-        * { -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     </style>
 </head>
 <body>
     <div id="root"></div>
-    <script type="text/babel" src="app.js"></script>
+    <script src="app.js"></script>
+    <noscript>Esta aplicación requiere JavaScript para funcionar.</noscript>
 </body>
 </html>
